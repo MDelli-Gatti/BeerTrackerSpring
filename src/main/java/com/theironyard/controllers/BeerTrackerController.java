@@ -1,5 +1,6 @@
 package com.theironyard.controllers;
 
+import com.theironyard.PasswordStorage;
 import com.theironyard.entities.Beer;
 import com.theironyard.entities.User;
 import com.theironyard.services.BeerRepository;
@@ -26,7 +27,7 @@ public class BeerTrackerController {
     UserRepository users;
 
     @PostConstruct
-    public void init() throws InvalidKeySpecException, NoSuchAlgorithmException {
+    public void init() throws InvalidKeySpecException, NoSuchAlgorithmException, PasswordStorage.CannotPerformOperationException {
         User user = users.findOneByName("Zach");
         if (user == null) {
             user = new User();
@@ -46,7 +47,7 @@ public class BeerTrackerController {
     ) {
         String username = (String) session.getAttribute("username");
 
-        if (username == null); {
+        if (username == null) {
             return "login";
         }
 
@@ -84,7 +85,7 @@ public class BeerTrackerController {
     }
 
     @RequestMapping("/edit-beer")
-    public String editBeer(int id, String name, String type, HttpSession session) throws Exception {
+    public String editBeer(Integer id, String name, String type, HttpSession session) throws Exception {
         if (session.getAttribute("username") == null) {
             throw new Exception("Not logged in.");
         }
@@ -106,7 +107,7 @@ public class BeerTrackerController {
             user.password = PasswordStorage.createHash(password);
             users.save(user);
         }
-        else if (!PasswordStorage.validatePassword(user.password, password)) {
+        else if (!PasswordStorage.verifyPassword(user.password, password)) {
             throw new Exception("Wrong password");
         }
 
