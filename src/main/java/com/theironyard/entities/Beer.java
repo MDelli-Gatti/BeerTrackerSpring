@@ -21,7 +21,7 @@ public class Beer {
     @Column(nullable = false)
     public Integer calories;
 
-    @OneToMany
+    @ManyToOne
     public User user;
 
     public Beer() {
